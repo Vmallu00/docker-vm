@@ -68,6 +68,8 @@ QEMU_CMD+=(
 
 -D "$LOG_FILE"
 
+-monitor unix:$RUNTIME_DIR/monitor.sock,server,nowait
+
 -boot c
 
 -rtc base=utc
