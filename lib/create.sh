@@ -104,3 +104,22 @@ info "Cloud-Init ISO created."
 
 EOF
 
+info "=========================================="
+info "Virtual Machine created successfully!"
+info "=========================================="
+
+echo
+echo "VM Name      : $VM_NAME"
+echo "RAM          : ${VM_RAM} MB"
+echo "CPU          : $VM_CPU Core(s)"
+echo "Disk         : $VM_DISK"
+echo "SSH Port     : $SSH_PORT"
+echo
+echo "Commands:"
+echo "  vm start"
+echo "  vm status"
+echo "  vm terminal"
+echo "  vm tmate"
+echo
+echo "Powered by $AUTHOR"
+echo "𓆰𓆪"
