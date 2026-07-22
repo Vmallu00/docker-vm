@@ -204,3 +204,78 @@ info "Cloud-Init created."
 
 }
 
+install_vm_command() {
+
+info "Installing vm command..."
+
+cp "$BASE_DIR/vm" /usr/local/bin/vm
+
+chmod +x /usr/local/bin/vm
+
+info "vm command installed."
+
+}
+
+
+check_dependencies() {
+
+command -v qemu-system-x86_64 >/dev/null || {
+    error "QEMU is not installed."
+    exit 1
+}
+
+command -v cloud-localds >/dev/null || {
+    error "cloud-image-utils is not installed."
+    exit 1
+}
+
+}
+
+
+finish_install() {
+
+banner
+
+echo
+echo "========================================"
+echo " Docker VM Manager Installed"
+echo "========================================"
+echo
+echo "Commands:"
+echo
+echo " vm create"
+echo " vm start"
+echo " vm stop"
+echo " vm restart"
+echo " vm status"
+echo " vm terminal"
+echo " vm ssh"
+echo " vm tmate"
+echo " vm regen"
+echo
+echo "Powered by $AUTHOR"
+echo "𓆰𓆪"
+
+}
+
+
+main() {
+
+banner
+
+info "Starting installation..."
+
+create_dirs
+
+install_packages
+
+check_dependencies
+
+install_vm_command
+
+finish_install
+
+}
+
+
+main
