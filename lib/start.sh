@@ -61,3 +61,56 @@ qemu-system-x86_64
 
 -nographic
 )
+
+QEMU_CMD+=(
+-daemonize
+-pidfile "$PID_FILE"
+
+-D "$LOG_FILE"
+
+-boot c
+
+-rtc base=utc
+
+-device virtio-rng-pci
+-device virtio-balloon-pci
+
+-no-reboot
+)
+
+"${QEMU_CMD[@]}"
+
+sleep 5
+
+if [ ! -f "$PID_FILE" ]; then
+    error "Failed to start Virtual Machine."
+    exit 1
+fi
+
+PID=$(cat "$PID_FILE")
+
+if ! kill -0 "$PID" 2>/dev/null; then
+    error "QEMU exited unexpectedly."
+    exit 1
+fi
+
+info "Virtual Machine started successfully."
+
+echo
+echo "========================================"
+echo " Docker VM Manager"
+echo "========================================"
+echo
+echo "Status : RUNNING"
+echo "PID    : $PID"
+echo
+echo "SSH"
+echo "ssh -p ${SSH_PORT} root@127.0.0.1"
+echo
+echo "Run:"
+echo "vm status"
+echo "vm terminal"
+echo "vm tmate"
+echo
+echo "Powered by $AUTHOR"
+echo "𓆰𓆪"
