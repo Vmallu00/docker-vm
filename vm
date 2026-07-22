@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+BASE_DIR="/opt/docker-vm"
+LIB_DIR="$BASE_DIR/lib"
+
+case "${1:-menu}" in
+
+create)
+    bash "$LIB_DIR/create.sh"
+;;
+
+start)
+    bash "$LIB_DIR/start.sh"
+;;
+
+stop)
+    bash "$LIB_DIR/stop.sh"
+;;
+
+restart)
+    bash "$LIB_DIR/restart.sh"
+;;
+
+status)
+    bash "$LIB_DIR/status.sh"
+;;
+
+terminal)
+    bash "$LIB_DIR/terminal.sh"
+;;
+
+ssh)
+    bash "$LIB_DIR/ssh.sh"
+;;
+
+tmate)
+    bash "$LIB_DIR/tmate.sh"
+;;
+
+regen)
+    bash "$LIB_DIR/regen.sh"
+;;
+
+logs)
+    bash "$LIB_DIR/logs.sh"
+;;
+
+backup)
+    bash "$LIB_DIR/backup.sh"
+;;
+
+restore)
+    bash "$LIB_DIR/restore.sh"
+;;
+
+update)
+    bash "$BASE_DIR/update.sh"
+;;
+
+delete)
+    bash "$LIB_DIR/delete.sh"
+;;
+
+menu)
+
+clear
+
+echo "===================================================="
+echo "                 𓆰𓆪 Docker VM Manager 𓆰𓆪"
+echo "===================================================="
+echo
+echo "              Powered by slayer_999_13432"
+echo
+echo "===================================================="
+echo
+echo "1) Create VM"
+echo "2) Start VM"
+echo "3) Stop VM"
+echo "4) Restart VM"
+echo "5) Status"
+echo "6) Terminal"
+echo "7) SSH"
+echo "8) TMATE"
+echo "9) Regenerate TMATE"
+echo "10) Logs"
+echo "11) Backup"
+echo "12) Restore"
+echo "13) Update"
+echo "14) Delete VM"
+echo "0) Exit"
+echo
+read -rp "Select: " CHOICE
+
+case "$CHOICE" in
+1) bash "$LIB_DIR/create.sh" ;;
+2) bash "$LIB_DIR/start.sh" ;;
+3) bash "$LIB_DIR/stop.sh" ;;
+4) bash "$LIB_DIR/restart.sh" ;;
+5) bash "$LIB_DIR/status.sh" ;;
+6) bash "$LIB_DIR/terminal.sh" ;;
+7) bash "$LIB_DIR/ssh.sh" ;;
+8) bash "$LIB_DIR/tmate.sh" ;;
+9) bash "$LIB_DIR/regen.sh" ;;
+10) bash "$LIB_DIR/logs.sh" ;;
+11) bash "$LIB_DIR/backup.sh" ;;
+12) bash "$LIB_DIR/restore.sh" ;;
+13) bash "$BASE_DIR/update.sh" ;;
+14) bash "$LIB_DIR/delete.sh" ;;
+0) exit 0 ;;
+*) echo "Invalid option." ;;
+esac
+
+;;
+
+*)
+echo "Unknown command: $1"
+echo
+echo "Usage:"
+echo "  vm"
+echo "  vm create"
+echo "  vm start"
+echo "  vm stop"
+echo "  vm restart"
+echo "  vm status"
+echo "  vm terminal"
+echo "  vm ssh"
+echo "  vm tmate"
+echo "  vm regen"
+echo "  vm logs"
+echo "  vm backup"
+echo "  vm restore"
+echo "  vm update"
+echo "  vm delete"
+exit 1
+;;
+
+esac
