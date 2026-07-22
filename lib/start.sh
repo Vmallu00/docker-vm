@@ -10,7 +10,15 @@ mkdir -p "$RUNTIME_DIR"
 mkdir -p "$LOG_DIR"
 
 if [ ! -f "$DISK_FILE" ]; then
-    error "Virtual Machine not found."
+    error "VM does not exist."
+    echo
+    echo "Run:"
+    echo "  vm create"
+    exit 1
+fi
+
+if [ ! -f "$CLOUD_ISO" ]; then
+    error "Cloud-Init ISO not found."
     echo
     echo "Run:"
     echo "  vm create"
@@ -22,11 +30,11 @@ if [ -f "$PID_FILE" ]; then
     PID=$(cat "$PID_FILE")
 
     if kill -0 "$PID" 2>/dev/null; then
-        warn "Virtual Machine is already running."
+        warn "VM is already running."
         exit 0
-    else
-        rm -f "$PID_FILE"
     fi
+
+    rm -f "$PID_FILE"
 
 fi
 
@@ -34,19 +42,22 @@ info "Starting Virtual Machine..."
 
 QEMU_CMD=(
 qemu-system-x86_64
--enable-kvm
+
+-accel tcg
 -machine q35
 -cpu max
+
 -smp "$VM_CPU"
 -m "$VM_RAM"
 
--drive file="$DISK_FILE",if=virtio
+-name "$VM_NAME"
+
+-drive file="$DISK_FILE",if=virtio,format=qcow2
 
 -drive file="$CLOUD_ISO",media=cdrom
 
--nographic
-
 -netdev user,id=net0,hostfwd=tcp::${SSH_PORT}-:22
-
 -device virtio-net-pci,netdev=net0
+
+-nographic
 )
