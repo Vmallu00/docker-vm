@@ -103,3 +103,104 @@ openssh-client
 info "Packages installed."
 
 }
+
+download_image() {
+
+info "Checking Ubuntu image..."
+
+IMAGE_URL="https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+IMAGE_FILE="$IMAGE_DIR/noble-server-cloudimg-amd64.img"
+
+if [ -f "$IMAGE_FILE" ]; then
+    info "Ubuntu image already exists."
+    return
+fi
+
+info "Downloading Ubuntu 24.04 Cloud Image..."
+
+wget -O "$IMAGE_FILE" "$IMAGE_URL"
+
+info "Download completed."
+
+}
+
+create_disk() {
+
+DISK="$VM_DIR/$VM_NAME.qcow2"
+
+if [ -f "$DISK" ]; then
+    warn "VM disk already exists."
+    return
+fi
+
+info "Creating VM disk..."
+
+qemu-img create \
+-f qcow2 \
+-F qcow2 \
+-b "$IMAGE_FILE" \
+"$DISK" \
+"$VM_DISK"
+
+info "Disk created."
+
+}
+
+create_cloudinit() {
+
+info "Generating Cloud-Init..."
+
+mkdir -p "$CLOUD_DIR"
+
+cat > "$CLOUD_DIR/user-data" <<EOF
+#cloud-config
+
+hostname: ubuntu-vm
+
+manage_etc_hosts: true
+
+disable_root: false
+
+ssh_pwauth: true
+
+chpasswd:
+  list: |
+    root:root
+  expire: false
+
+package_update: true
+package_upgrade: true
+
+packages:
+ - curl
+ - wget
+ - git
+ - unzip
+ - openssh-server
+ - tmate
+ - qemu-guest-agent
+
+runcmd:
+ - systemctl enable ssh
+ - systemctl restart ssh
+ - systemctl enable qemu-guest-agent
+ - systemctl restart qemu-guest-agent
+
+final_message: "Docker VM Manager Ready."
+
+EOF
+
+cat > "$CLOUD_DIR/meta-data" <<EOF
+instance-id: ubuntu-vm
+local-hostname: ubuntu-vm
+EOF
+
+cloud-localds \
+"$CLOUD_DIR/cloud-init.iso" \
+"$CLOUD_DIR/user-data" \
+"$CLOUD_DIR/meta-data"
+
+info "Cloud-Init created."
+
+}
+
